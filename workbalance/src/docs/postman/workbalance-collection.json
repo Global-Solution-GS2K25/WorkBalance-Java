@@ -1,0 +1,171 @@
+{
+  "info": {
+    "_postman_id": "8042dc07-b845-4ebe-9b8a-3102d2ecaef0",
+    "name": "WorkBalance API",
+    "description": "Collection de testes da API WorkBalance (Global Solution FIAP).\n\nFluxo sugerido:\n1. Registrar usuário (/api/auth/register)\n2. Login para obter o token JWT (/api/auth/login)\n3. Usar o token como Bearer Token nas rotas protegidas:\n   - /api/usuarios\n   - /api/checkins (POST e GET)\n",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Registrar Usuário",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nome\": \"Admin\",\n  \"email\": \"maria@workbalance.com\",\n  \"senha\": \"maria123\",\n  \"role\": \"ADMIN\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login (obter token JWT)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"maria@workbalance.com\",\n  \"senha\": \"maria123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar Usuários",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/usuarios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "usuarios"
+          ]
+        },
+        "description": "Requer Bearer Token no Authorization para funcionar."
+      },
+      "response": []
+    },
+    {
+      "name": "Criar Check-In",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuarioId\": 1,\n  \"humor\": 4,\n  \"nivelEstresse\": 2,\n  \"qualidadeSono\": 5,\n  \"sintomasFisicos\": \"Leve dor de cabe\\u00e7a\",\n  \"observacoes\": \"Semana tranquila de trabalho\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/checkins",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "checkins"
+          ]
+        },
+        "description": "Requer Bearer Token no Authorization para funcionar."
+      },
+      "response": []
+    },
+    {
+      "name": "Listar Check-Ins (paginado)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/checkins?usuarioId=1&page=0&size=5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "checkins"
+          ],
+          "query": [
+            {
+              "key": "usuarioId",
+              "value": "1"
+            },
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "5"
+            }
+          ]
+        },
+        "description": "Requer Bearer Token no Authorization para funcionar."
+      },
+      "response": []
+    }
+  ]
+}
