@@ -10,13 +10,13 @@ public class CheckInRequest {
     @NotNull
     private Long usuarioId;
 
-    @NotNull @Min(1) @Max(5)
+    @NotNull @Min(1) @Max(10)
     private Integer humor;
 
-    @NotNull @Min(1) @Max(5)
+    @NotNull @Min(1) @Max(10)
     private Integer nivelEstresse;
 
-    @NotNull @Min(1) @Max(5)
+    @NotNull @Min(1) @Max(10)
     private Integer qualidadeSono;
 
     @Size(max = 500)
