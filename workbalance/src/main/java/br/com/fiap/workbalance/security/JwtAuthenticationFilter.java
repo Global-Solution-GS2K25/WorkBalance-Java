@@ -27,10 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
-    /**
-     * Define quais rotas NÃO devem passar pelo filtro de JWT
-     * (Swagger, OpenAPI, recursos estáticos, endpoints de auth, etc.)
-     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
@@ -51,8 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        // Se não tiver header ou não começar com Bearer, só segue o fluxo.
-        // Quem decide se precisa de auth ou não é o SecurityConfig.
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
