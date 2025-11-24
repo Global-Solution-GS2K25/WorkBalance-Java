@@ -34,10 +34,6 @@ public class SecurityConfig {
             "/webjars/**"
     };
 
-    /**
-     * Chain 1: totalmente liberado para Swagger/OpenAPI
-     * (sem filtro de JWT, sem autenticação)
-     */
     @Bean
     @Order(1)
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -49,13 +45,9 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 );
 
-        // NÃO adiciona jwtFilter aqui
         return http.build();
     }
 
-    /**
-     * Chain 2: segurança da API normal (com JWT)
-     */
     @Bean
     @Order(2)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -63,9 +55,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // login/registro liberados
                         .requestMatchers("/api/auth/**").permitAll()
-                        // todo o resto precisa de JWT válido
+                        .requestMatchers("/api/db/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

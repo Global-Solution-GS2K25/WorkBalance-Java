@@ -27,7 +27,6 @@ public class DatabaseIntegrationController {
         this.dbService = dbService;
     }
 
-    // 1) Registrar check-in via PROCEDURE + validação pela função FN_PODE_FAZER_CHECKIN
     @PostMapping("/checkins/procedure")
     @Operation(summary = "Registrar check-in via procedure PR_CHECKIN_INS")
     public ResponseEntity<?> registrarCheckinViaProcedure(
@@ -43,7 +42,6 @@ public class DatabaseIntegrationController {
         return ResponseEntity.ok("Check-in criado via procedure com ID = " + idGerado);
     }
 
-    // 2) Média de humor da equipe em um intervalo
     @GetMapping("/equipes/{idEquipe}/media-humor")
     @Operation(summary = "Média de humor da equipe no intervalo informado")
     public ResponseEntity<?> mediaHumorEquipe(
@@ -59,7 +57,6 @@ public class DatabaseIntegrationController {
         return ResponseEntity.ok(media);
     }
 
-    // 3) Índice de risco (BAIXO/MEDIO/ALTO/SEM_DADOS)
     @GetMapping("/equipes/{idEquipe}/indice-risco")
     @Operation(summary = "Índice de risco da equipe (BAIXO/MEDIO/ALTO)")
     public ResponseEntity<?> indiceRiscoEquipe(@PathVariable Long idEquipe) {
