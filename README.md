@@ -1,256 +1,254 @@
-# WorkBalance Hub API
+# 🌿 WorkBalance Hub API – Java Backend
 
-API REST em **Spring Boot** para o projeto **Global Solution** – módulo **Java Advanced / Enterprise Application**.  
-Ela funciona como **espinha dorsal** da solução, concentrando regras de negócio, autenticação e persistência dos dados de bem-estar dos colaboradores.
+API REST desenvolvida em **Spring Boot** para o projeto **Global Solution FIAP**, integrando o módulo de **Java Advanced** com o módulo de **Mastering Relational Database (Oracle)**.
 
----
-
-## 🧩 Visão Geral da Solução
-
-A WorkBalance Hub API expõe endpoints REST para:
-
-- Cadastro e autenticação de usuários;
-- Registro de **check-ins de bem-estar** (humor, sono, estresse, sintomas físicos);
-- Consulta de histórico de check-ins com **filtros e paginação**;
-- Integração futura com:
-  - Aplicativo / front-end;
-  - Módulo de IoT (sensores);
-  - Módulo de DevOps (deploy, observabilidade, etc.).
+A aplicação funciona como **espinha dorsal** da solução WorkBalance, concentrando regras de negócio, autenticação JWT, integração com procedures e functions PL/SQL e toda a lógica de bem-estar dos colaboradores.
 
 ---
 
-## 🎯 Objetivo da API
+## 🔎 Visão Geral da Solução
 
-Fornecer uma **API centralizada e segura**, seguindo boas práticas de arquitetura, para:
+A WorkBalance Hub API oferece:
 
-- Padronizar o acesso aos dados de bem-estar;
-- Facilitar integração entre times (Java, IoT, DevOps, Mobile);
-- Garantir segurança com JWT;
-- Viabilizar métricas e monitoramento de qualidade de vida no ambiente de trabalho.
-
----
-
-## 🏗 Arquitetura em Camadas
-
-A API segue uma arquitetura em camadas:
-
-- **Controller (`api.controller`)**  
-  Recebe as requisições HTTP e expõe os endpoints REST.
-
-- **DTOs (`api.dto`)**  
-  Objetos de transporte que modelam o que entra e o que sai da API.
-
-- **Service (`service`)**  
-  Contém as regras de negócio (validações, orquestrações, etc.).
-
-- **Repository (`domain.repository`)**  
-  Acesso ao banco de dados via **Spring Data JPA**.
-
-- **Domain / Entities (`domain.entity`)**  
-  Modelagem das tabelas/objetos de domínio: `Usuario`, `Equipe`, `CheckInBemEstar`.
-
-- **Security (`security`)**  
-  Implementação de autenticação JWT, filtro de requisições, integração com Spring Security.
-
-- **Config (`config`)**  
-  Configurações da aplicação (`SecurityConfig`, `OpenApiConfig`, etc.).
+- Cadastro e autenticação de usuários (JWT)
+- Registro de **check-ins de bem-estar** (humor, estresse, sono, sintomas)
+- Consulta paginada de check-ins
+- **Execução de procedures e funções Oracle**:
+  - Inserção via `PR_CHECKIN_INS`
+  - Cálculo via `FN_MEDIA_HUMOR_EQUIPE`
+  - Classificação via `FN_INDICE_RISCO_EQUIPE`
+- Base para integrações:
+  - IoT (sensores de ambiente)
+  - Mobile
+  - DevOps
+  - Front-end
 
 ---
 
-## 🛠 Tecnologias Utilizadas
+## 🎯 Objetivos da API
+
+- Centralizar regras e dados do WorkBalance
+- Garantir segurança com JWT
+- Utilizar **Oracle PL/SQL** como backend de cálculos e validações
+- Facilitar integração com outros módulos da Global Solution
+- Fornecer indicadores de saúde e bem-estar de equipes
+
+---
+
+# 🧱 Arquitetura em Camadas
+
+### ✔ Controller (`api.controller`)
+Gerencia as rotas HTTP da aplicação.
+
+### ✔ DTOs (`api.dto`)
+Modelos usados para entrada/saída de dados na API.
+
+### ✔ Service (`service`)
+Regras de negócio, validações e **chamadas ao Oracle** (procedures/functions).
+
+### ✔ Repository (`repository`)
+Acesso ao banco via JPA para consultas simples.
+
+### ✔ Entities (`domain.entity`)
+Representam as tabelas do banco.
+
+### ✔ Security (`security`)
+JWT, filtros e configuração de autorização.
+
+### ✔ Config (`config`)
+Configurações globais (Swagger, Beans, SecurityConfig, OpenAPI).
+
+---
+
+# 🛠 Tecnologias Utilizadas
 
 - **Java 17**
 - **Spring Boot 3.x**
-- Spring Web (REST)
-- Spring Data JPA (persistência)
-- H2 Database (banco em memória para desenvolvimento)
-- Spring Security
-- JWT (JSON Web Token)
-- Bean Validation (validações de entrada)
+- Spring Web
+- Spring Security + JWT
+- Spring Data JPA
+- **Oracle Database 21c (FIAP Cloud)**
+- PL/SQL — Procedures & Functions
+- HikariCP (pool de conexões)
+- Bean Validation
 - Springdoc OpenAPI (Swagger)
-- Postman (testes e documentação prática)
+- Postman
 
 ---
 
-## 📦 Modelagem de Domínio (Entidades Principais)
+# 🗄 Integração com Oracle (PL/SQL)
 
-- **Usuario**
-  - `id`
-  - `nome`
-  - `email`
-  - `senhaHash`
-  - `role` (ex.: `ADMIN`, `USER`)
-  - relacionamento com `Equipe`
+A API consome **procedures** e **funções** do Oracle por meio do `DatabaseIntegrationService`.
 
-- **Equipe**
-  - `id`
-  - `nome`
-  - relação 1:N com `Usuario`
+### 📌 Procedures utilizadas:
+- `PR_USUARIO_INS`
+- `PR_CHECKIN_INS` (**usada no vídeo**)
+- `PR_EQUIPES_INS`
+- `PR_ESTACAO_INS`
+- `PR_LEITURA_INS`
+- `PR_PLANO_ACAO_INS`
 
-- **CheckInBemEstar**
-  - `id`
-  - `dataHora`
-  - `humor` (escala numérica)
-  - `nivelEstresse`
-  - `qualidadeSono`
-  - `sintomasFisicos`
-  - `observacoes`
-  - `usuarioId` (referência ao usuário que fez o check-in)
+### 📌 Funções utilizadas:
+- `FN_PODE_FAZER_CHECKIN`
+- `FN_MEDIA_HUMOR_EQUIPE`
+- `FN_INDICE_RISCO_EQUIPE`
+
+### 📁 Scripts (pasta `/database`)
+- `01_create_workbalance.sql`
+- `02_functions_workbalance.sql`
+- `04_procedures_workbalance.sql`
+- `05_inserts_workbalance.sql`
 
 ---
 
-## ▶️ Como rodar localmente
+# 🧬 Endpoints Oracle (Procedures & Functions)
 
-1. Certifique-se de ter **Java 17** e **Maven** instalados.
-2. No diretório do projeto, execute:
+### 🟦 POST — Registrar check-in via procedure
+`POST /api/db/checkins/procedure`
 
- ```bash
- mvn spring-boot:run
- ```
-3. Acesse:
-- Swagger UI (se disponível): ```http://localhost:8080/swagger-ui/index.html```
-- H2 Console: ```http://localhost:8080/h2-console```
-- JDBC URL: ```jdbc:h2:mem:workbalance-db```
-- Usuário: ```sa```
-- Senha: (em branco)
-
----
-
-## 🔐 Segurança & Autenticação (JWT)
-
-Fluxo básico
-1. Registrar usuário
-
-    Endpoint público:
-
-    ```POST /api/auth/register```
-
-    Body exemplo:
-    ```bash
-    {
-    "nome": "Admin",
-    "email": "admin@workbalance.com",
-    "senha": "123456",
-    "role": "ADMIN"
-    }
-    ```
-
-2. Login e obtenção do token
-
-    ```POST /api/auth/login```
-    ```bash
-    {
-    "email": "admin@workbalance.com",
-    "senha": "123456"
-    }
-    ```
-    Resposta (exemplo):
-    ```bash
-    {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "tipo": "Bearer"
-    }
-    ```
-
-3. Uso do token nas rotas protegidas
-
-    Em todas as requisições protegidas, enviar o header:
-    ```bash
-    Authorization: Bearer SEU_TOKEN_AQUI
-    ```
-
-    Exemplos de rotas protegidas:
-
-- ```GET /api/usuarios```
-- ```POST /api/checkins```
-- ```GET /api/checkins?usuarioId=1&page=0&size=5```
-
----
-
-## 🌐 Endpoints Principais
-
-**Autenticação**
-- POST ```/api/auth/register```:
-Registra um novo usuário.
-
-- POST ```/api/auth/login```:
-Autentica o usuário e retorna um token JWT.
-
-**Usuários**
-- GET ```/api/usuarios``` (protegido):
-Lista os usuários cadastrados.
-
-**Check-ins de Bem-estar**
-- POST ```/api/checkins``` (protegido):
-Registra um novo check-in.
-
-Body exemplo:
-```bash
+Exemplo:
+```json
 {
-  "usuarioId": 1,
+  "usuarioId": 12,
   "humor": 4,
-  "nivelEstresse": 2,
+  "nivelEstresse": 3,
   "qualidadeSono": 5,
-  "sintomasFisicos": "Leve dor de cabeça",
-  "observacoes": "Semana tranquila de trabalho"
+  "sintomasFisicos": "cansaço leve",
+  "observacoes": "check-in via procedure"
 }
 ```
 
-- **GET** ```/api/checkins?usuarioId=1&page=0&size=5``` (protegido): 
-    Retorna uma página de check-ins do usuário informado.
-
-    Resposta exemplo (estrutura do ```Page``` do Spring):
+🟩 GET — Média de humor
 ```bash
-{
-  "content": [
-    {
-      "id": 1,
-      "usuarioId": 1,
-      "dataHora": "2025-11-19T16:20:41.595744",
-      "humor": 4,
-      "nivelEstresse": 2,
-      "qualidadeSono": 5,
-      "sintomasFisicos": "Leve dor de cabeça",
-      "observacoes": "Semana tranquila de trabalho"
-    }
-  ],
-  "pageable": {
-    "pageNumber": 0,
-    "pageSize": 5,
-    "paged": true
-  },
-  "totalElements": 1,
-  "totalPages": 1,
-  "first": true,
-  "last": true
-}
+GET /api/db/equipes/{idEquipe}/media-humor?dataInicio=2025-01-01T00:00:00&dataFim=2025-12-31T23:59:59
+```
+Exemplo de resposta:
+```bash
+3.5
+```
+
+🟧 GET — Índice de risco
+```bash
+GET /api/db/equipes/{idEquipe}/indice-risco
+```
+```bash
+Resposta possível:
+BAIXO | MEDIO | ALTO | SEM_DADOS
 ```
 
 ---
 
-## 📊 Paginação, Ordenação e Filtros
+## 🔐 Segurança (JWT)
 
-- A listagem de check-ins utiliza Spring Data Pageable.
-- Parâmetros suportados em ```/api/checkins```:
-    - ```usuarioId``` – obrigatório, filtra os check-ins de um usuário específico;
-    - ```page``` – número da página (0-based);
-    - ```size``` – quantidade de registros por página.
-Caso necessário, é possível estender para suporte a sort no futuro.
+1️⃣ Registro
+```arduino
+POST /api/auth/register
+```
+Exemplo:
+```json
+{
+  "nome": "Admin",
+  "email": "admin@workbalance.com",
+  "senha": "123456",
+  "role": "ADMIN"
+}
+```
+
+2️⃣ Login
+```bash
+POST /api/auth/login
+```
+Retorno:
+```bash
+{
+  "token": "xxxx.yyyy.zzzz",
+  "tipo": "Bearer"
+}
+```
+
+3️⃣ Uso do token
+Em rotas protegidas:
+```makefile
+Authorization: Bearer SEU_TOKEN
+```
+
+---
+
+## 📚 Endpoints Gerais da Aplicação
+
+👤 Usuários
+- GET /api/usuarios
+- POST /api/auth/register
+
+😀 Check-ins (padrão)
+- POST /api/checkins
+- GET /api/checkins?usuarioId=1&page=0&size=5
+
+🔢 Oracle (procedures & functions)
+- POST /api/db/checkins/procedure
+- GET /api/db/equipes/{id}/media-humor
+- GET /api/db/equipes/{id}/indice-risco
+
+---
+
+## ▶️ Como Rodar o Projeto
+
+1. Entre na pasta raiz e execute:
+```bash
+mvn spring-boot:run
+```
+
+2. Acesse:
+- API base → http://localhost:8080
+- Swagger → http://localhost:8080/swagger-ui/index.html (se habilitado)
+- Banco Oracle configurado no application.properties
+
+---
 
 ## 🧪 Testes com Postman
 
-**📬 Collection Postman**
-A coleção para testes está em:
-- ```docs/postman/workbalance-collection.json```
+A coleção está em:
+```bash
+docs/postman/workbalance-collection.json
+```
 
-Para usar:
-1. Abra o Postman.
-2. Clique em Import.
-3. Selecione o arquivo ```workbalance-collection.json```.
-4. Siga o fluxo:
-- ```Registrar Usuário```
-- ```Login (obter token)```
-- Usar o token em:
-    - ```Listar Usuários```
-    - ```Criar Check-In```
-    - ```Listar Check-Ins (paginado)```
+Fluxo sugerido:
+1. Registrar usuário
+2. Fazer login
+3. Usar token nas rotas protegidas
+4. Inserir check-in via procedure
+5. Confirmar no Oracle
+6. Consultar média de humor e índice de risco
+
+---
+
+## 🎥 Demonstração (vídeo entregue)
+- O vídeo demonstra:
+- Execução dos scripts Oracle
+- Confirmação do banco
+- API Java rodando
+- Inserção via procedure
+- Funções Oracle via API
+- Validação final
+
+LINK DO VÍDEO: 
+
+---
+
+## 👨‍💻 Autores
+
+- MARIA EDUARDA FERNANDES ROCHA – RM 560657
+- JUAN PABLO REBELO COELHO – RM 560445
+- VICTOR DE CARVALHO ALVES - RM 560395
+
+---
+
+## ⭐ Status do Projeto
+| Módulo            | Status       |
+| ----------------- | ------------ |
+| Banco Oracle      | ✔ Concluído  |
+| Java Backend      | ✔ Concluído  |
+| Integração PL/SQL | ✔ Concluído  |
+| Testes Postman    | ✔ Concluído  |
+| Vídeo             | ✔ Gravado    |
+| Documentação      | ✔ Finalizada |

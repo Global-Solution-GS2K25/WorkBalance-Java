@@ -1,0 +1,336 @@
+{
+	"info": {
+		"_postman_id": "5c1d3ac4-a1cc-4ee9-8948-c07e6f6d2aab",
+		"name": "WorkBalance API",
+		"description": "Collection de testes da API WorkBalance (Global Solution FIAP).\n\nFluxo sugerido:\n1. Registrar usuário (/api/auth/register)\n2. Login para obter o token JWT (/api/auth/login)\n3. Usar o token como Bearer Token nas rotas protegidas:\n   - /api/usuarios\n   - /api/checkins (POST e GET)\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45518177"
+	},
+	"item": [
+		{
+			"name": "Registrar Usuário",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nome\": \"Admin\",\n  \"email\": \"maria@workbalance.com\",\n  \"senha\": \"maria123\",\n  \"role\": \"ADMIN\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login (obter token JWT)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"maria@workbalance.com\",\n  \"senha\": \"maria123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar Usuários",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJpYUB3b3JrYmFsYW5jZS5jb20iLCJpYXQiOjE3NjM5MTc1NTUsImV4cCI6MTc2MzkyMTE1NX0.4OpRQlGhaWdLMLb2Nw6OrfIwJ6bwmw6IyFPuoHA-m5c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/usuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usuarios"
+					]
+				},
+				"description": "Requer Bearer Token no Authorization para funcionar."
+			},
+			"response": []
+		},
+		{
+			"name": "Criar Check-In",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"usuarioId\": 1,\n  \"humor\": 4,\n  \"nivelEstresse\": 2,\n  \"qualidadeSono\": 5,\n  \"sintomasFisicos\": \"Leve dor de cabe\\u00e7a\",\n  \"observacoes\": \"Semana tranquila de trabalho\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/checkins",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"checkins"
+					]
+				},
+				"description": "Requer Bearer Token no Authorization para funcionar."
+			},
+			"response": []
+		},
+		{
+			"name": "Listar Check-Ins (paginado)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJpYUB3b3JrYmFsYW5jZS5jb20iLCJpYXQiOjE3NjM5MTc1NTUsImV4cCI6MTc2MzkyMTE1NX0.4OpRQlGhaWdLMLb2Nw6OrfIwJ6bwmw6IyFPuoHA-m5c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJpYUB3b3JrYmFsYW5jZS5jb20iLCJpYXQiOjE3NjM5MTc1NTUsImV4cCI6MTc2MzkyMTE1NX0.4OpRQlGhaWdLMLb2Nw6OrfIwJ6bwmw6IyFPuoHA-m5",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/checkins?usuarioId=1&page=0&size=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"checkins"
+					],
+					"query": [
+						{
+							"key": "usuarioId",
+							"value": "1"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "5"
+						}
+					]
+				},
+				"description": "Requer Bearer Token no Authorization para funcionar."
+			},
+			"response": []
+		},
+		{
+			"name": "Inserir CheckIn Procedure",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJpYUB3b3JrYmFsYW5jZS5jb20iLCJpYXQiOjE3NjM5MTc1NTUsImV4cCI6MTc2MzkyMTE1NX0.4OpRQlGhaWdLMLb2Nw6OrfIwJ6bwmw6IyFPuoHA-m5c",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"usuarioId\": 12,\r\n  \"humor\": 4,\r\n  \"nivelEstresse\": 3,\r\n  \"qualidadeSono\": 5,\r\n  \"sintomasFisicos\": \"cansaço leve\",\r\n  \"observacoes\": \"check-in via procedure\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/db/checkins/procedure",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"db",
+						"checkins",
+						"procedure"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teste: Média de Humor",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJpYUB3b3JrYmFsYW5jZS5jb20iLCJpYXQiOjE3NjM5MTc1NTUsImV4cCI6MTc2MzkyMTE1NX0.4OpRQlGhaWdLMLb2Nw6OrfIwJ6bwmw6IyFPuoHA-m5c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/db/equipes/1/media-humor?dataInicio=2025-01-01T00%3A00%3A00&dataFim=2025-12-31T23%3A59%3A59",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"db",
+						"equipes",
+						"1",
+						"media-humor"
+					],
+					"query": [
+						{
+							"key": "dataInicio",
+							"value": "2025-01-01T00%3A00%3A00"
+						},
+						{
+							"key": "dataFim",
+							"value": "2025-12-31T23%3A59%3A59"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Teste: Indice de Risco",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/db/equipes/1/indice-risco",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"db",
+						"equipes",
+						"1",
+						"indice-risco"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
