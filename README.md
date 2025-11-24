@@ -231,7 +231,7 @@ Fluxo sugerido:
 - Funções Oracle via API
 - Validação final
 
-LINK DO VÍDEO: 
+LINK DO VÍDEO: https://youtu.be/-CAgKg8nLQQ
 
 ---
 
